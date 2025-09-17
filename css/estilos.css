@@ -1,57 +1,58 @@
-/* --- Estilos generales --- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body, html {
-  height: 100%;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-/* --- Sección de portada --- */
-.portada {
-  background: url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f")
-              center/cover no-repeat;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-/* Capa de color translúcido */
-.overlay {
-  background-color: rgba(0,0,0,0.55);
-  padding: 3rem 2rem;
+/* ======= Bloque video ======= */
+#videoTrampas.bloque {
+  margin: 3rem auto;
+  padding: 2rem;
+  max-width: 900px;
+  background: rgba(0,0,0,0.45);
+  border-radius: 14px;
   text-align: center;
-  border-radius: 15px;
-  color: #fff;
-  max-width: 600px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
-.overlay h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.overlay p {
-  font-size: 1.2rem;
+.intro-video {
+  color: #e0f7fa;
+  font-size: 1.1rem;
+  line-height: 1.6;
   margin-bottom: 2rem;
 }
 
-/* Botón de ingreso */
-.btn {
-  text-decoration: none;
-  background: #64b5f6;
-  color: #fff;
-  padding: 0.8rem 1.6rem;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: background 0.3s, transform 0.2s;
+/* contenedor para hacer el iframe responsive */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+.video-container iframe {
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  border:0;
+  border-radius:12px;
 }
 
-.btn:hover {
-  background: #428fc1;
-  transform: translateY(-2px);
+/* ======= Menú de secciones ======= */
+.menu-secciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 2rem 0;
 }
+.menu-secciones a {
+  color: #b3e5fc;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color .3s;
+}
+.menu-secciones a:hover {
+  color: #64b5f6;
+}
+
 
 
 

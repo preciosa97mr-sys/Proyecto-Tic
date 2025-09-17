@@ -1,0 +1,103 @@
+/* ======== Estilos base ======== */
+*{
+  box-sizing: border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  /* el mismo degradado de la página principal */
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family:'Segoe UI',sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  color:#b3e5fc; /* texto en celeste pastel */
+}
+
+/* ======== Contenedor de la portada ======== */
+.portada{
+  max-width:700px;
+  background:rgba(0,0,0,0.5); /* semi-transparente para que se vea el degradado */
+  padding:3rem 2rem;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 8px 20px rgba(0,0,0,0.5);
+}
+
+/* ======== Nube con título ======== */
+.nube{
+  position:relative;
+  display:inline-block;
+  background:rgba(20,40,55,0.7);
+  border:4px dashed #64b5f6; /* celeste */
+  padding:2rem;
+  border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;
+  margin-bottom:2rem;
+}
+
+.nube h1{
+  font-size:2rem;
+  color:#b3e5fc;
+  max-width:320px;
+  margin:auto;
+  text-shadow:0 0 8px rgba(100,181,246,0.6);
+}
+
+/* ======== Iconos flotando alrededor ======== */
+.iconos{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+.icono{
+  position:absolute;
+  font-size:2rem;
+  color:#64b5f6;
+  animation:flotar 4s ease-in-out infinite;
+}
+
+.icono:nth-child(1){ top:-20px; left:20px;}
+.icono:nth-child(2){ top:-20px; right:20px;}
+.icono:nth-child(3){ bottom:-20px; left:50%; transform:translateX(-50%);}
+
+@keyframes flotar{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+
+/* ======== Texto de introducción ======== */
+.intro{
+  color:#e0f7fa;
+  font-size:1.1rem;
+  margin-bottom:2rem;
+  line-height:1.6;
+}
+
+/* ======== Botón de acceso ======== */
+.btn{
+  display:inline-block;
+  background:#64b5f6;
+  color:#0f2027;
+  text-decoration:none;
+  padding:0.8rem 1.6rem;
+  border-radius:10px;
+  font-weight:bold;
+  transition:background 0.3s,transform 0.2s;
+}
+
+.btn:hover{
+  background:#428fc1;
+  transform:translateY(-2px);
+}
+
+/* ======== Responsive ======== */
+@media (max-width:600px){
+  .nube h1{font-size:1.6rem;}
+  .intro{font-size:1rem;}
+}

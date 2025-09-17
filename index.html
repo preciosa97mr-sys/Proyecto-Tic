@@ -1,247 +1,35 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Las trampas invisibles de las redes sociales</title>
-  <link rel="stylesheet" href="css/estilos.css">
+  <title>Trampas invisibles en redes</title>
+  <link rel="stylesheet" href="css/portada.css">
 </head>
 <body>
-  <!-- Barra de progreso -->
-  <div id="progreso"></div>
+  <section class="portada">
+    <div class="nube">
+      <h1>Trampas invisibles en redes</h1>
 
-  <header>
-    <h1>Las trampas invisibles de las redes sociales</h1>
-    <nav>
-      <ul>
-        <li><a href="#comparacion">Comparación</a></li>
-        <li><a href="#validacion">Validación externa</a></li>
-        <li><a href="#algoritmos">Algoritmos</a></li>
-        <li><a href="#salud">Salud mental</a></li>
-        <li><a href="#uso">Uso consciente</a></li>
-        <li><a href="portfolio.html">Portfolio</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <section class="intro">
-    <p>Un recorrido por las principales trampas psicológicas y tecnológicas de las plataformas sociales, con claves para un uso más consciente.</p>
-    <!-- Video embebido -->
-    <div class="video">
-      <iframe width="560" height="315"
-            src="https://www.youtube.com/embed/A97wxjgj8ec?si=ZRyT2pZptivWaV5a" 
-            title="YouTube video player" frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-      </iframe>
-    </div>
-  </section>
-
-  <!-- Bloques de contenido -->
-
-<!-- Comparación constante -->
-<section id="comparacion" class="bloque">
-  <h2>Comparación constante</h2>
-
-  <!-- Imagen y descripción -->
-  <img src="https://cloudfront-us-east-1.images.arcpublishing.com/copesa/RDZJPP7DDVCF3NF4XIY4WZVOWA.jpg"
-       alt="Comparación constante"
-       class="imagen-bloque">
-  <p>Compararse constantemente con otros, especialmente con figuras públicas o influencers, puede afectar la autoestima y generar estrés, ansiedad o sensación de insuficiencia.</p>
-
-  <!-- Formulario de usuario -->
-  <div id="inicioComparacion" class="inicio">
-    <p>Ingresá tu nombre y una imagen para comenzar el test:</p>
-    <div class="inputsInicio">
-      <input type="text" id="nombreUsuario" placeholder="Tu nombre">
-      <input type="text" id="imagenUsuario" placeholder="URL de tu imagen">
-      <button id="btnEmpezar">Empezar test</button>
-    </div>
-    <p id="mensajeError" style="color: #ff6b6b; display:none; margin-top:10px;">
-      Por favor ingresá tu nombre y la URL de una imagen.
-    </p>
-  </div>
-
-  <!-- Test -->
-  <div id="testComparacion" style="display:none; text-align:center; margin-top:2rem;">
-    <h3>¿Crees que eres mejor que este influencer?</h3>
-    <img id="fotoInfluencer" src="" alt="Influencer" style="max-width:150px; border-radius:10px; margin-bottom:1rem;">
-    <p id="nombreInfluencer"></p>
-
-    <div id="accionesComparacion">
-      <button data-accion="si">Sí</button>
-      <button data-accion="talvez">Tal vez</button>
-      <button data-accion="no">No</button>
-    </div>
-
-    <div id="mensajeTest" style="margin-top:1rem; font-weight:bold;"></div>
-    <div class="barra-container" style="margin-top:1rem; background:#333; border-radius:8px; width:80%; margin-left:auto; margin-right:auto; height:20px;">
-      <div id="barraAutoestima" style="height:100%; width:100%; background:#64b5f6; border-radius:8px;"></div>
-    </div>
-  </div>
-</section>
-
-
-
-
-<!-- Validación externa -->
-<section id="validacion" class="bloque">
-  <h2>Validación externa</h2>
-
-  <!-- Personaje -->
-  <div id="personaje">
-    <div id="cara">😐</div>
-
-    <div class="acciones">
-      <button class="like">👍 Like</button>
-      <button class="dislike">👎 Dislike</button>
-    </div>
-
-    <!-- Contadores -->
-    <div id="contadores">
-      <span id="contadorLikes">👍 Likes: 0</span>
-      <span id="contadorDislikes">👎 Dislikes: 0</span>
-    </div>
-  </div>
-
-  <p>
-    Los "me gusta" y comentarios se convierten en una métrica de valía personal, afectando la autoestima.
-  </p>
-  <a href="https://psycnet.apa.org/fulltext/2020-69060-001.html" target="_blank">Fuente APA</a>
-</section>
-
-
-<!-- Algoritmos -->
-<section id="algoritmos" class="bloque">
-  <h2>Algoritmos y manipulación</h2>
-  <p>Interactúa con el contenido y observa cómo tus elecciones influyen en lo que ves.</p>
-
-  <div id="tarjetaContainer">
-    <div id="tarjetaActual" class="tarjeta">Cargando contenido...</div>
-  </div>
-
-  <div id="accionesHistorial">
-    <button class="histBtn" data-accion="like">👍 Me gusta</button>
-    <button class="histBtn" data-accion="dislike">👎 No me interesa</button>
-    <button id="resetHistorial">🔄 Reiniciar</button>
-  </div>
-
-  <h3>Historial de interacciones</h3>
-  <div id="historial" class="historial"></div>
-
-  <p id="mensajeHistorial" style="margin-top:1rem; text-align:center; font-style:italic;"></p>
-</section>
-
-
-<!-- Salud mental -->
-<!-- Test interactivo de hábitos en redes -->
-<section id="salud" class="bloque">
-  <h2>Impacto en la salud mental</h2>
-<div class="imagen-bloque-container">
-  <img src="https://noticiasquehacenbien.com.ar/wp-content/uploads/2024/10/las-claves-salud-mental.jpg" 
-       alt="Salud mental" class="imagen-bloque">
-</div>
-  <p>El uso excesivo puede contribuir a ansiedad, depresión y disminución del bienestar general.</p>
-  <a href="https://www.who.int/health-topics/mental-health#tab=tab_1" 
-     target="_blank">Fuente OMS</a>
-
-  <div id="testSalud">
-    <h3>Test rápido de hábitos en redes</h3>
-
-    <div class="pregunta" data-id="1">
-      <p>1️⃣ ¿Cuántas horas al día pasas en redes sociales?</p>
-      <button data-valor="1">Menos de 1 hora</button>
-      <button data-valor="2">1-3 horas</button>
-      <button data-valor="3">Más de 3 horas</button>
-    </div>
-
-    <div class="pregunta" data-id="2" style="display:none;">
-      <p>2️⃣ ¿Cómo te sentís después de usar redes?</p>
-      <button data-valor="1">Feliz / relajado</button>
-      <button data-valor="2">Neutral</button>
-      <button data-valor="3">Ansioso / triste</button>
-    </div>
-
-    <div class="pregunta" data-id="3" style="display:none;">
-      <p>3️⃣ ¿Sos consciente del tiempo que pasás online?</p>
-      <button data-valor="1">Sí, siempre</button>
-      <button data-valor="2">A veces</button>
-      <button data-valor="3">No, nunca</button>
-    </div>
-
-    <div id="resultadoTest"></div>
-
-    <button id="reiniciarTest">Reiniciar Test</button>
-  </div>
-</section>
-
-
-
-<!-- Uso consciente -->
-<!-- Uso consciente (bloqueado hasta alcanzar tiempo mínimo de uso activo) -->
-<section id="uso" class="bloque locked" aria-live="polite">
-  <h2>Uso consciente</h2>
-
-  <!-- Overlay simple — candado + texto sobre fondo oscuro (fondo, no modal) -->
-  <div class="uso-lock-overlay" aria-hidden="false" role="status">
-    <div class="uso-lock-bg">
-      <!-- Icono candado grande semi-transparente -->
-      <svg class="lockIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96" aria-hidden="true">
-        <path fill="#ffffff" d="M17 8V7a5 5 0 0 0-10 0v1H5a1 1 0 0 0-1 1v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a1 1 0 0 0-1-1h-2zM8 7a4 4 0 0 1 8 0v1H8V7z" opacity="0.95"/>
-      </svg>
-
-      <!-- Texto integrado al fondo (ids usados por JS) -->
-      <div class="uso-lock-text">
-        <div>Sección bloqueada</div>
-        
+      <!-- iconos decorativos -->
+      <div class="iconos">
+        <span class="icono">📱</span>
+        <span class="icono">💭</span>
+        <span class="icono">🔗</span>
       </div>
     </div>
-  </div>
 
-  <!-- Contenido oculto hasta el desbloqueo -->
-  <div class="uso-content" aria-hidden="true" style="display:none;">
-    <!-- Aquí va el contenido de la sección (widgets, textos, etc.) -->
-    <img src="https://intrabach.wordpress.com/wp-content/uploads/2021/05/cuidado_publicaciones.png"
-         alt="Uso consciente" class="imagen-bloque" style="max-width:320px;">
-    <p style="margin-top:1rem;">
-      El uso consciente te ayuda a mantener límites y proteger tu salud mental. Cuando esta sección se desbloquee tendrás herramientas prácticas.
+    <p class="intro">
+      Las redes sociales forman parte de nuestra vida cotidiana:
+      nos conectan, nos informan y entretienen.  
+      Pero detrás de su aparente inocencia se esconden
+      trampas invisibles que afectan nuestra forma de pensar,
+      sentir y relacionarnos.  
+      La clave está en usarlas como herramientas
+      y no permitir que ellas nos usen a nosotros.
     </p>
-    <!-- Inserta aquí pomodoro, respiración, pacto, etc. -->
-  </div>
-</section>
 
-
-
-</section>
-
-
-    <!-- Quiz interactivo -->
-    <section id="quiz" class="bloque">
-        <h2>Mini Quiz</h2>
-        <p>¿Qué trampa invisible sentís que te afecta más en tu día a día?</p>
-        <div class="opciones">
-            <button class="opcion" data-respuesta="comparacion">Comparación constante</button>
-            <button class="opcion" data-respuesta="validacion">Validación externa</button>
-            <button class="opcion" data-respuesta="algoritmos">Algoritmos y manipulación</button>
-            <button class="opcion" data-respuesta="salud">Salud mental</button>
-            <button class="opcion" data-respuesta="uso">Uso consciente</button>
-        </div>
-        <div id="resultado"></div>
-    </section>
-
-
-    <footer>
-        <p>© 2025 Maria Isabella – Proyecto educativo</p>
-        <div id="timer">Tiempo en página: <span id="tiempo">00:00:00</span></div>
-    </footer>
-
-
-  <!-- Botón volver arriba -->
-  <button id="btnArriba">⬆</button>
-
-  <script src="js/script.js"></script>
+    <a class="btn" href="proyecto.html">Entrar al sitio</a>
+  </section>
 </body>
 </html>
-
-
-

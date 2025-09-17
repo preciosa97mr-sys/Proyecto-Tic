@@ -134,14 +134,16 @@ botones.forEach(btn => {
   const contenedores = document.querySelectorAll('.puzzle');
   if (!contenedores.length) return;
 
+  const LIMITE_INTENTOS = 25; // 👉 Cambiá acá el máximo permitido
+  const usoMensaje = document.getElementById("usoMensaje");
+
   contenedores.forEach(initPuzzle);
 
   function initPuzzle(root) {
-    const size = parseInt(root.dataset.size || '3', 10); // 3x3
+    const size = parseInt(root.dataset.size || '3', 10);
     const img  = root.dataset.image;
     const concepto = root.dataset.concepto || 'Concepto';
 
-    // Crear estructura
     const grid = document.createElement('div');
     grid.className = 'puzzle__grid';
     grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
@@ -160,81 +162,51 @@ botones.forEach(btn => {
       </div>
     `;
 
-    const acciones = document.createElement('div');
-    acciones.className = 'puzzle__acciones';
-    const btnMezclar = document.createElement('button');
-    btnMezclar.className = 'puzzle__btn';
-    btnMezclar.type = 'button';
-    btnMezclar.textContent = 'Mezclar';
-    const btnResolver = document.createElement('button');
-    btnResolver.className = 'puzzle__btn';
-    btnResolver.type = 'button';
-    btnResolver.textContent = 'Mostrar armado';
-
-    acciones.appendChild(btnMezclar);
-    acciones.appendChild(btnResolver);
-
     root.appendChild(grid);
     root.appendChild(hud);
     root.appendChild(overlay);
-    root.appendChild(acciones);
 
-    // Estado: array de longitud n*n con la posición actual (0..n*n-1); último índice es "vacío"
     const total = size * size;
-    const objetivo = Array.from({ length: total }, (_, i) => i); // 0..8
-    let estado = objetivo.slice(); // copia
+    const objetivo = Array.from({ length: total }, (_, i) => i);
+    let estado = objetivo.slice();
     let movimientos = 0;
+    let bloqueadoPorUso = false;
 
-    // Construir piezas (0..total-2 son visibles; la última es vacía)
     const tiles = [];
     for (let i = 0; i < total; i++) {
       const tile = document.createElement('button');
       tile.className = 'puzzle__tile';
       tile.type = 'button';
-      tile.setAttribute('aria-label', 'Pieza del rompecabezas');
-
-      // Posición correcta (fila/col) para el background-position
-      const fila = Math.floor(i / size);
-      const col  = i % size;
-      const bgX = (100 / (size - 1)) * col; // 0, 50, 100 para 3x3
-      const bgY = (100 / (size - 1)) * fila;
-
-      // Asignamos imagen y recorte
       if (i === total - 1) {
-        tile.classList.add('puzzle__tile', 'puzzle__tile--vacia');
+        tile.classList.add('puzzle__tile--vacia');
         tile.style.backgroundImage = 'none';
-        tile.tabIndex = -1;
       } else {
+        const fila = Math.floor(i / size);
+        const col  = i % size;
+        const bgX = (100 / (size - 1)) * col;
+        const bgY = (100 / (size - 1)) * fila;
         tile.style.backgroundImage = `url("${img}")`;
         tile.style.backgroundSize = `${size * 100}% ${size * 100}%`;
-        tile.dataset.correct = i; // índice correcto
-        // Guardamos el recorte "correcto" para reutilizar al renderizar
-        tile.dataset.bgx = bgX;
-        tile.dataset.bgy = bgY;
+        tile.style.backgroundPosition = `${bgX}% ${bgY}%`;
       }
       tiles.push(tile);
     }
 
-    // Mezclar a un estado resoluble (para tableros de tamaño impar: inversions par)
     function mezclarResoluble() {
       let perm;
       do {
         perm = objetivo.slice();
-        // Fisher-Yates desde 0 hasta total-2 (dejamos vacío al final)
         for (let i = total - 2; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [perm[i], perm[j]] = [perm[j], perm[i]];
         }
-        // Asegurarnos de que no esté ya resuelto
-        if (perm.every((v, idx) => v === idx)) continue;
       } while (!esSoluble(perm));
       return perm;
     }
 
     function esSoluble(perm) {
-      // Para N impar, la configuración es resoluble si #inversiones es par
       let inv = 0;
-      const arr = perm.slice(0, total - 1); // ignorar el vacío
+      const arr = perm.slice(0, total - 1);
       for (let i = 0; i < arr.length - 1; i++) {
         for (let j = i + 1; j < arr.length; j++) {
           if (arr[i] > arr[j]) inv++;
@@ -243,22 +215,14 @@ botones.forEach(btn => {
       return inv % 2 === 0;
     }
 
-    // Render: reconstruye el grid en el orden del estado
     function render() {
       grid.innerHTML = '';
       estado.forEach((indiceTile) => {
-        const tile = tiles[indiceTile];
-        if (!tile.classList.contains('puzzle__tile--vacia')) {
-          // Posición de recorte correcta (mantiene imagen consistente)
-          tile.style.backgroundPosition = `${tile.dataset.bgx}% ${tile.dataset.bgy}%`;
-        }
-        grid.appendChild(tile);
+        grid.appendChild(tiles[indiceTile]);
       });
-
       hud.textContent = `Movimientos: ${movimientos}`;
     }
 
-    // Helpers posición
     function idxVacio() { return estado.indexOf(total - 1); }
     function coords(i) { return [Math.floor(i / size), i % size]; }
     function vecinos(i) {
@@ -271,74 +235,49 @@ botones.forEach(btn => {
       return res;
     }
 
-    // Mover: si clic en un tile vecino al vacío => intercambiar
     function tryMove(indiceEnEstado) {
+      if (bloqueadoPorUso) return; // 🚫 no permite mover más
+
       const posVacio = idxVacio();
       if (!vecinos(indiceEnEstado).includes(posVacio)) return false;
+
       [estado[indiceEnEstado], estado[posVacio]] = [estado[posVacio], estado[indiceEnEstado]];
       movimientos++;
       render();
       comprobarVictoria();
+      comprobarUsoConsciente();
       return true;
     }
 
-    // Click handler
     grid.addEventListener('click', (e) => {
       const tile = e.target.closest('.puzzle__tile');
       if (!tile || tile.classList.contains('puzzle__tile--vacia')) return;
-      const indiceTile = tiles.indexOf(tile);             // índice absoluto del tile
-      const indiceEnEstado = estado.indexOf(indiceTile);  // dónde está ahora
+      const indiceTile = tiles.indexOf(tile);
+      const indiceEnEstado = estado.indexOf(indiceTile);
       tryMove(indiceEnEstado);
-    });
-
-    // Teclado (accesibilidad): mover usando flechas sobre el hueco
-    grid.addEventListener('keydown', (e) => {
-      const posV = idxVacio();
-      const [r, c] = coords(posV);
-      let destino = null;
-      if (e.key === 'ArrowUp'    && r < size - 1) destino = posV + size;
-      if (e.key === 'ArrowDown'  && r > 0)        destino = posV - size;
-      if (e.key === 'ArrowLeft'  && c < size - 1) destino = posV + 1;
-      if (e.key === 'ArrowRight' && c > 0)        destino = posV - 1;
-      if (destino != null) {
-        e.preventDefault();
-        tryMove(destino);
-      }
-    });
-
-    // Controles
-    btnMezclar.addEventListener('click', () => {
-      root.classList.remove('puzzle--completo');
-      movimientos = 0;
-      estado = mezclarResoluble();
-      render();
-      // Enfocar grid para mover con flechas
-      grid.setAttribute('tabindex', '0');
-      grid.focus();
-    });
-
-    btnResolver.addEventListener('click', () => {
-      estado = objetivo.slice();
-      movimientos = 0;
-      render();
-      root.classList.add('puzzle--completo');
     });
 
     function comprobarVictoria() {
       const ok = estado.every((v, i) => v === i);
-      if (ok) {
-        root.classList.add('puzzle--completo');
+      if (ok) root.classList.add('puzzle--completo');
+    }
+
+    function comprobarUsoConsciente() {
+      if (movimientos >= LIMITE_INTENTOS) {
+        bloqueadoPorUso = true;
+        usoMensaje.innerHTML = `⚠️ Has jugado demasiado tiempo. <br>
+        Recuerda la importancia del <strong>uso consciente</strong>.`;
+        grid.style.pointerEvents = "none"; // bloquea clicks
+        grid.style.opacity = "0.5";        // efecto visual
       }
     }
 
-    // Iniciar mezclado
+    // Iniciar
     estado = mezclarResoluble();
     render();
-    grid.setAttribute('role', 'application');
-    grid.setAttribute('aria-label', `Rompecabezas ${size} por ${size}`);
-    grid.setAttribute('tabindex', '0');
   }
 })();
+
 
 // Test interactivo de hábitos en redes
 (function(){
@@ -424,7 +363,7 @@ btnDislike.addEventListener('click', () => {
 });
 
 
-// Mini-feed Algoritmos y Manipulación
+// Algoritmos y Manipulación
 (function() {
   const tarjetaActual = document.getElementById('tarjetaActual');
   const btns = document.querySelectorAll('#accionesHistorial .histBtn');
@@ -432,7 +371,7 @@ btnDislike.addEventListener('click', () => {
   const historialDiv = document.getElementById('historial');
   const mensaje = document.getElementById('mensajeHistorial');
 
-  // Contenido con tipo y etiqueta
+  // Contenido
   const contenidos = [
     { tipo: 'diversion', etiqueta: 'meme', texto: '😄 Meme divertido del día' },
     { tipo: 'diversion', etiqueta: 'video', texto: '🎵 Video musical trending' },
@@ -445,28 +384,44 @@ btnDislike.addEventListener('click', () => {
     { tipo: 'politica', etiqueta: 'opinion', texto: '🗳️ Opinión electoral' }
   ];
 
-  // Pesos iniciales
+  // Parámetros de aprendizaje
   const PESO_MIN = 1;
-  const PESO_MAX = 10;
-  const PESO_STEP = 2; // cuanto aumenta/disminuye etiqueta específica
-  const PESO_TIPO_STEP = 1; // ajuste menor para tipo general
+  const PESO_MAX = 15;
+  const PESO_STEP_LIKE = 3;   // subida fuerte
+  const PESO_STEP_DISLIKE = 1; // bajada más suave
+  const DECAY = 0.95;         // decaimiento global (5%)
+  const EXPLORACION = 0.15;   // % de mostrar random
 
-  // Pesos por tipo
+  // Pesos
   const pesosTipo = { diversion: 3, noticia: 3, politica: 3 };
-
-  // Pesos por etiqueta específica
   const pesosEtiqueta = {};
   contenidos.forEach(c => pesosEtiqueta[c.etiqueta] = 3);
 
-  // Genera tarjeta aleatoria ponderada
+  // Historial de likes
+  const historialLikes = [];
+
+  // Generador de tarjeta ponderada
   function contenidoAlgoritmo() {
+    // 15% chance de exploración (ignora pesos)
+    if (Math.random() < EXPLORACION) {
+      return contenidos[Math.floor(Math.random() * contenidos.length)];
+    }
+
+    // Crear pool ponderado
     const pool = [];
     contenidos.forEach(item => {
-      const peso = pesosEtiqueta[item.etiqueta] + pesosTipo[item.tipo]; // combinación tipo+etiqueta
+      let peso = pesosEtiqueta[item.etiqueta] + pesosTipo[item.tipo];
+
+      // Refuerzo extra si está en historial de likes recientes
+      if (historialLikes.includes(item.etiqueta)) {
+        peso += 2;
+      }
+
+      peso = Math.max(PESO_MIN, Math.min(PESO_MAX, peso));
       for (let i = 0; i < peso; i++) pool.push(item);
     });
-    const idx = Math.floor(Math.random() * pool.length);
-    return pool[idx];
+
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
   function mostrarTarjeta() {
@@ -487,11 +442,8 @@ btnDislike.addEventListener('click', () => {
   }
 
   function swipeTarjeta(direccion, callback) {
-    if (direccion === 'like') {
-      tarjetaActual.style.transform = 'translateY(-120px) rotate(-5deg)';
-    } else {
-      tarjetaActual.style.transform = 'translateX(-200px) rotate(-10deg)';
-    }
+    tarjetaActual.style.transform =
+      direccion === 'like' ? 'translateY(-120px) rotate(-5deg)' : 'translateX(-200px) rotate(-10deg)';
     tarjetaActual.style.opacity = '0';
     setTimeout(callback, 500);
   }
@@ -503,20 +455,26 @@ btnDislike.addEventListener('click', () => {
       const etiqueta = tarjetaActual.dataset.etiqueta;
 
       swipeTarjeta(accion, () => {
-        // Ajustar pesos según acción
+        // Decaimiento global (simula paso del tiempo)
+        Object.keys(pesosEtiqueta).forEach(k => {
+          pesosEtiqueta[k] = Math.max(PESO_MIN, pesosEtiqueta[k] * DECAY);
+        });
+
         if (accion === 'like') {
-          pesosEtiqueta[etiqueta] = Math.min(PESO_MAX, pesosEtiqueta[etiqueta] + PESO_STEP);
-          pesosTipo[tipo] = Math.min(PESO_MAX, pesosTipo[tipo] + PESO_TIPO_STEP);
+          pesosEtiqueta[etiqueta] = Math.min(PESO_MAX, pesosEtiqueta[etiqueta] + PESO_STEP_LIKE);
+          pesosTipo[tipo] = Math.min(PESO_MAX, pesosTipo[tipo] + 1);
+          historialLikes.push(etiqueta);
+          if (historialLikes.length > 5) historialLikes.shift(); // memoria corta
         } else {
-          pesosEtiqueta[etiqueta] = Math.max(PESO_MIN, pesosEtiqueta[etiqueta] - PESO_STEP);
-          pesosTipo[tipo] = Math.max(PESO_MIN, pesosTipo[tipo] - PESO_TIPO_STEP);
+          pesosEtiqueta[etiqueta] = Math.max(PESO_MIN, pesosEtiqueta[etiqueta] - PESO_STEP_DISLIKE);
+          pesosTipo[tipo] = Math.max(PESO_MIN, pesosTipo[tipo] - 1);
         }
 
         actualizarHistorial(tipo, etiqueta, accion);
 
         mensaje.textContent = accion === 'like'
-          ? `📌 El algoritmo aprende: te gusta "${etiqueta}" (${tipo}).`
-          : `⚠️ El algoritmo reduce frecuencia de "${etiqueta}" (${tipo}).`;
+          ? `📌 El algoritmo refuerza: más de "${etiqueta}" (${tipo}).`
+          : `⚠️ El algoritmo baja la prioridad de "${etiqueta}" (${tipo}).`;
 
         mostrarTarjeta();
       });
@@ -527,12 +485,14 @@ btnDislike.addEventListener('click', () => {
     historialDiv.innerHTML = '';
     Object.keys(pesosTipo).forEach(k => pesosTipo[k] = 3);
     Object.keys(pesosEtiqueta).forEach(k => pesosEtiqueta[k] = 3);
+    historialLikes.length = 0;
     mensaje.textContent = '🔄 Reiniciado. El algoritmo olvida tus preferencias.';
     mostrarTarjeta();
   });
 
   mostrarTarjeta();
 })();
+
 
 // Comparacion constante
 // Comparacion constante - secuencia 8 influencers aleatorios + usuario en 9
@@ -686,8 +646,9 @@ btnDislike.addEventListener('click', () => {
 
 /* Uso consciente: desbloqueo por tiempo activo + widgets (Pomodoro 5min, respirar 60s, pacto) */
 // Desbloqueo de "Uso consciente" después de tiempo activo (HH:MM:SS display)
+// Uso consciente + Juego anti-scroll integrado
 (function(){
-  const UNLOCK_AFTER = 120; // segundos de uso activo necesarios (cambiar aquí)
+  const UNLOCK_AFTER = 3; // segundos de uso activo necesarios; cambia aquí (ej. 120 = 2 minutos)
   const usoSection = document.getElementById('uso');
   if(!usoSection) return;
 
@@ -695,7 +656,16 @@ btnDislike.addEventListener('click', () => {
   const targetDisplay = document.getElementById('unlockTargetDisplay');
   const content = usoSection.querySelector('.uso-content');
 
-  // formatea segundos a mm:ss (si querés hh:mm:ss, se puede ajustar)
+  // elementos del juego
+  const antiGame = document.getElementById('antiScrollGame');
+  const gameContainer = antiGame ? antiGame.querySelector('.game-container') : null;
+  const scrollBar = antiGame ? antiGame.querySelector('.scroll-bar') : null;
+  const targetZone = antiGame ? antiGame.querySelector('.target-zone') : null;
+  const stopBtn = document.getElementById('stopBtn');
+  const retryBtn = document.getElementById('retryBtn');
+  const gameMessage = document.getElementById('gameMessage');
+
+  // formatea segundos a mm:ss (o hh:mm:ss si necesario)
   function formatTime(s){
     const hrs = Math.floor(s/3600);
     const mins = Math.floor((s%3600)/60);
@@ -710,6 +680,7 @@ btnDislike.addEventListener('click', () => {
   if(targetDisplay) targetDisplay.textContent = formatTime(UNLOCK_AFTER);
   if(overlayTimerEl) overlayTimerEl.textContent = formatTime(UNLOCK_AFTER);
 
+  // contador de tiempo activo (sólo cuenta si la pestaña está visible)
   let activeSeconds = 0;
   let tickInterval = null;
 
@@ -720,7 +691,6 @@ btnDislike.addEventListener('click', () => {
   function startTick(){
     if(tickInterval) return;
     tickInterval = setInterval(() => {
-      // solo contar si la pestaña está visible
       if(document.visibilityState === 'visible'){
         activeSeconds++;
         updateOverlayTimer();
@@ -743,22 +713,109 @@ btnDislike.addEventListener('click', () => {
       content.style.display = 'block';
       content.setAttribute('aria-hidden','false');
     }
-    // foco suave hacia la sección
-    try { usoSection.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e){}
+    // mostrar el juego (si existe)
+    if(antiGame){
+      antiGame.setAttribute('aria-hidden','false');
+      antiGame.style.display = 'block';
+      initAntiScrollGame(); // inicializa el juego
+    }
+    // llevar la vista al bloque
+  
   }
 
-  // arrancar
+  // iniciar contador
+  updateOverlayTimer();
   startTick();
-
-  // pausar si la pestaña no está visible
   document.addEventListener('visibilitychange', () => {
     if(document.visibilityState === 'visible') startTick();
     else stopTick();
   });
 
-  // opcional: exponer función para desbloquear manualmente en pruebas
+  // --- Juego anti-scroll ---
+  // Variables de animación
+  let animId = null;
+  let position = 0;
+  let direction = 1; // 1 = baja, -1 = sube (en este juego sólo baja y reinicia)
+  let speed = 1.6;   // píxeles por frame, ajustable
+  let running = false;
+  let canAttempt = false;
+
+  function initAntiScrollGame(){
+    if(!gameContainer || !scrollBar || !targetZone || !stopBtn || !gameMessage) return;
+    // reset visual
+    position = 0;
+    running = true;
+    canAttempt = true;
+    gameMessage.textContent = '';
+    scrollBar.style.top = position + 'px';
+    stopBtn.disabled = false;
+    retryBtn.style.display = 'none';
+    // start animation
+    cancelAnimationFrame(animId);
+    animLoop();
+  }
+
+  function animLoop(){
+    if(!running) return;
+    // actualizar posición
+    position += speed;
+    // si llega al fondo, reinicia arriba (loop infinito)
+    const maxPos = gameContainer.clientHeight - scrollBar.offsetHeight - 2;
+    if(position > maxPos) position = 0;
+    scrollBar.style.top = position + 'px';
+    animId = requestAnimationFrame(animLoop);
+  }
+
+  function checkSuccess(){
+    const barRect = scrollBar.getBoundingClientRect();
+    const targetRect = targetZone.getBoundingClientRect();
+    // Comprobar si barra está completamente dentro de la target zone
+    const inside = (barRect.top >= targetRect.top && barRect.bottom <= targetRect.bottom);
+    return inside;
+  }
+
+  // stop button listener
+  if(stopBtn){
+    stopBtn.addEventListener('click', () => {
+      if(!canAttempt) return;
+      // pause animation
+      running = false;
+      cancelAnimationFrame(animId);
+      const success = checkSuccess();
+      if(success){
+        gameMessage.style.color = '#4caf50';
+        gameMessage.textContent = "✅ ¡Lo lograste! Así como detuviste el scroll, podés frenar tu tiempo online.";
+        stopBtn.disabled = true;
+        retryBtn.style.display = 'inline-block';
+        canAttempt = false;
+      } else {
+        gameMessage.style.color = '#ff5252';
+        gameMessage.textContent = "❌ Fallaste. Reintentá para mejorar tu puntería.";
+        stopBtn.disabled = true;
+        retryBtn.style.display = 'inline-block';
+        canAttempt = false;
+      }
+    });
+  }
+
+  // retry button listener
+  if(retryBtn){
+    retryBtn.addEventListener('click', () => {
+      // reiniciar y permitir intento
+      position = 0;
+      scrollBar.style.top = position + 'px';
+      gameMessage.textContent = '';
+      stopBtn.disabled = false;
+      retryBtn.style.display = 'none';
+      canAttempt = true;
+      running = true;
+      cancelAnimationFrame(animId);
+      animLoop();
+    });
+  }
+
+  // permitir desbloqueo manual en consola para pruebas
   window.debugUnlockUso = unlockUso;
 
 })();
-
 

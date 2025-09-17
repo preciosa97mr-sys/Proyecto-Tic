@@ -1,3 +1,62 @@
+/* --- Estilos generales --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body, html {
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- Sección de portada --- */
+.portada {
+  background: url("https://images.unsplash.com/photo-1522202176988-66273c2fd55f")
+              center/cover no-repeat;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Capa de color translúcido */
+.overlay {
+  background-color: rgba(0,0,0,0.55);
+  padding: 3rem 2rem;
+  text-align: center;
+  border-radius: 15px;
+  color: #fff;
+  max-width: 600px;
+}
+
+.overlay h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.overlay p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* Botón de ingreso */
+.btn {
+  text-decoration: none;
+  background: #64b5f6;
+  color: #fff;
+  padding: 0.8rem 1.6rem;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+  background: #428fc1;
+  transform: translateY(-2px);
+}
+
+
+
+
+
 /* === Reset básico === */
 * {
   box-sizing: border-box;
@@ -575,6 +634,15 @@ footer {
   transform: translateY(-2px);
 }
 
+/* Centrar horizontalmente la imagen del bloque comparación constante */
+#comparacion .imagen-bloque {
+  display: block;      /* la convierte en bloque para que funcione margin:auto */
+  margin: 0 auto 1rem; /* centra y agrega un pequeño margen inferior */
+  max-width: 100%;     /* para que no se salga del contenedor */
+  height: auto;        /* mantiene la proporción */
+}
+
+
 
 /*estilos para uso conciente*/
 /* Overlay bloqueo Uso consciente */
@@ -588,42 +656,57 @@ footer {
   border-radius: 14px;
   z-index: 20;
   padding: 1rem;
-  pointer-events: auto; /* evita interacción con el contenido detrás mientras esté bloqueado */
+  pointer-events: auto;
 }
 
-/* Contenedor interno del overlay (sin tarjeta) */
 .uso-lock-bg {
   display: flex;
   align-items: center;
   gap: 1rem;
   color: rgba(255,255,255,0.95);
   text-align: left;
-  backdrop-filter: blur(4px); /* suaviza el fondo detrás */
+  backdrop-filter: blur(4px);
   padding: 0.6rem 0.9rem;
   border-radius: 10px;
-  background: rgba(10,14,18,0.18); /* ligera placa traslúcida para que el texto se lea */
+  background: rgba(10,14,18,0.18);
 }
 
-/* Candado grande y semitransparente */
-.lockIcon {
-  opacity: 0.95;
-  flex-shrink: 0;
-}
+.lockIcon { opacity: 0.95; flex-shrink: 0; }
+.uso-lock-text { font-size: 0.96rem; line-height:1.15; color:#eaf6ff; }
 
-/* Texto del overlay — tamaño y tono */
-.uso-lock-text {
-  font-size: 0.96rem;
-  line-height: 1.15;
-  color: #eaf6ff;
-}
-
-/* Si quieres que el overlay sea *solo* visual (no capture clicks), pon pointer-events:none;
-   pero para bloquear interacción mantenemos pointer-events:auto. */
-
-/* Ocultar contenido hasta desbloqueo (ya presente en tu CSS) */
+/* Ocultar contenido hasta desbloqueo */
 .bloque.locked .uso-content { display: none; }
 .bloque.unlocked .uso-lock-overlay { display: none; }
 .bloque.unlocked .uso-content { display: block; }
 
+/* responsive */
+@media (max-width:600px) {
+  .game-container { width: 180px; height: 300px; }
+  .target-zone { top: 120px; height: 56px; }
+  .scroll-bar { height: 34px; }
+}
 
+/* Estado bloqueado por uso consciente */
+.puzzle__grid.bloqueado {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+#usoMensaje {
+  font-weight: bold;
+  color: rgb(250, 250, 250);
+  margin-top: 1rem;
+}
+
+/* Imagen dentro del bloque de uso consciente */
+.uso-content .imagen-bloque {
+  width: 100%;
+  height: auto;
+  object-fit: contain;    /* asegura que se vea completa */
+  display: block;
+  max-height: 300px; /*Modifica la altura de la imagen*/
+  max-width: 390px;  /*Modifica el ancho de la imagen*/
+  margin: 0 auto;         /* centra la imagen */
+  border-radius: 12px;
+}
 

@@ -189,6 +189,24 @@ header nav a:hover {
   border-bottom: 1px solid #90caf9;
 }
 
+.ver-mas-btn {
+  display: inline;           /* botón en la misma línea del texto */
+  margin-left: 6px;          /* un pequeño espacio después del punto */
+  background-color: #6c63ff;
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ver-mas-btn:hover {
+  background-color: #5848c2;
+}
+
+
+
 /* === Footer === */
 footer {
   margin-top: 2em;

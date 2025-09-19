@@ -819,3 +819,21 @@ btnDislike.addEventListener('click', () => {
 
 })();
 
+//boton ver mas ver menos.
+// Selecciona todos los botones "Ver más"
+document.querySelectorAll('.ver-mas-btn').forEach(boton => {
+  boton.addEventListener('click', () => {
+    // Busca el id del texto extra desde el data-target del botón
+    const idTexto = boton.dataset.target;
+    const extraText = document.getElementById(idTexto);
+
+    // Alterna visibilidad y texto del botón
+    if (extraText.style.display === 'none' || extraText.style.display === '') {
+      extraText.style.display = 'inline';
+      boton.textContent = 'Ver menos';
+    } else {
+      extraText.style.display = 'none';
+      boton.textContent = 'Leer más';
+    }
+  });
+});

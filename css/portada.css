@@ -1,25 +1,33 @@
-/* ======== Estilos base ======== */
+/* ======== Reset ======== */
 *{
   box-sizing: border-box;
-  margin:0;
-  padding:0;
+  margin: 0;
+  padding: 0;
 }
 
 body{
-  /* el mismo degradado de la página principal */
   background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  font-family:'Segoe UI',sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  color:#b3e5fc; /* texto en celeste pastel */
+  font-family: 'Segoe UI', sans-serif;
+
+  /* para centrar el bloque y empujar el footer al fondo */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: #b3e5fc;
+}
+
+/* === CENTRADO PRINCIPAL === */
+main{
+  flex: 1;                         /* ocupa todo el espacio libre */
+  display: flex;
+  justify-content: center;          /* centra horizontal */
+  align-items: center;              /* centra vertical */
 }
 
 /* ======== Contenedor de la portada ======== */
 .portada{
-  max-width:700px;
-  background:rgba(0,0,0,0.5); /* semi-transparente para que se vea el degradado */
+  max-width:1200px;
+  background:rgba(0,0,0,0.5);
   padding:3rem 2rem;
   border-radius:20px;
   text-align:center;
@@ -31,7 +39,7 @@ body{
   position:relative;
   display:inline-block;
   background:rgba(20,40,55,0.7);
-  border:4px dashed #64b5f6; /* celeste */
+  border:4px dashed #64b5f6;
   padding:3rem;
   border-radius:50% 50% 50% 50% / 40% 40% 60% 60%;
   margin-bottom:3rem;
@@ -96,8 +104,21 @@ body{
   transform:translateY(-2px);
 }
 
+/* === Footer === */
+footer{
+  margin-top:2em;
+  padding:1.2em;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(6px);
+  text-align:center;
+  font-size:0.95rem;
+  color:#e0e0e0;
+  border-top:2px solid rgba(255,255,255,0.2);
+}
+
 /* ======== Responsive ======== */
 @media (max-width:600px){
   .nube h1{font-size:1.6rem;}
   .intro{font-size:1rem;}
 }
+

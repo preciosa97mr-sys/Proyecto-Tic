@@ -1,0 +1,124 @@
+/* ======= Estilo general para la página de Portfolio ======= */
+
+/* ===== Reset ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ===== Base ===== */
+body{
+  font-family:'Segoe UI',Roboto,sans-serif;
+  background:linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%) fixed;
+  color:#e0e0e0;
+  line-height:1.6;
+  min-height:100vh;
+}
+
+/* ===== Cabecera ===== */
+header{
+  background:rgba(15,32,39,.7);
+  backdrop-filter:blur(8px);
+  padding:1.5em 1em;
+  text-align:center;
+  box-shadow:0 4px 10px rgba(0,0,0,.4);
+}
+header h1{
+  font-size:2rem;
+  margin-bottom:0.6rem;
+  color:#fff;
+}
+.nav-principal{
+  margin-top:1rem;
+}
+.nav-principal .btn{
+  margin:0 .5rem;
+}
+
+/* ===== Botones estilo general (igual que en otras páginas) ===== */
+.btn{
+  display:inline-block;
+  padding:.6em 1.2em;
+  background:rgba(100,181,246,.15);
+  border:1px solid #64b5f6;
+  border-radius:8px;
+  color:#b3e5fc;
+  text-decoration:none;
+  font-weight:600;
+  transition:background .3s,transform .2s,box-shadow .3s;
+}
+.btn:hover{
+  background:rgba(100,181,246,.3);
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(100,181,246,.4);
+}
+.btn.activo{
+  background:rgba(100,181,246,.4);
+}
+
+/* ===== Contenedor ===== */
+.container{
+  max-width:1100px;
+  margin:2.5em auto;
+  padding:0 1em;
+}
+
+/* ===== Bloques ===== */
+.bloque-portfolio{
+  background:rgba(25,25,25,.85);
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.6);
+  padding:2em;
+  margin-bottom:3em;
+}
+.bloque-portfolio h2{
+  font-size:1.6rem;
+  margin-bottom:1rem;
+  color:#64b5f6;
+}
+.bloque-portfolio p, .bloque-portfolio li{
+  font-size:1.05rem;
+  margin-bottom:0.6rem;
+  color:#ddd;
+}
+.bloque-portfolio ul{
+  padding-left:1.2em;
+  margin-top:0.5em;
+}
+
+/* ===== Galería ===== */
+.galeria{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.2rem;
+}
+.galeria img{
+  width:100%;
+  border-radius:10px;
+  box-shadow:0 4px 12px rgba(0,0,0,.5);
+  transition:transform .3s, box-shadow .3s;
+}
+.galeria img:hover{
+  transform:scale(1.03);
+  box-shadow:0 8px 20px rgba(0,0,0,.6);
+}
+
+/* ===== Acciones ===== */
+.acciones{
+  text-align:center;
+  margin-top:2em;
+}
+
+/* ===== Footer ===== */
+footer{
+  margin-top:2em;
+  padding:1.2em;
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(6px);
+  text-align:center;
+  font-size:0.95rem;
+  color:#e0e0e0;
+}
+
+/* ===== Responsive ===== */
+@media(max-width:600px){
+  header h1{font-size:1.6rem}
+  .bloque-portfolio h2{font-size:1.3rem}
+}

@@ -1,25 +1,69 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio de recursos</title>
-  <link rel="stylesheet" href="css/estilos.css">
+  <title>Portfolio – Las Trampas Invisibles</title>
+  <link rel="stylesheet" href="css/portfolio.css">
 </head>
 <body>
   <header>
-    <h1>Portfolio de recursos</h1>
-    <nav><a href="proyecto.html">Volver al sitio</a></nav>
+    <h1>Portfolio del Proyecto “Trampas Invisibles en Redes”</h1>
+    <nav class="nav-principal">
+      <a class="btn" href="index.html">Inicio</a>
+      <a class="btn activo" href="portfolio.html">Portfolio</a>
+      <a class="btn" href="proyecto.html">Proyecto</a>
+    </nav>
   </header>
 
-  <section>
-    <h2>Materiales utilizados</h2>
-    <ul>
-      <li>Imágenes libres de derechos (Unsplash / Pixabay)</li>
-      <li>Artículos de APA, OMS, UNICEF, The Guardian</li>
-      <li>Video de Juli Savioli sobre redes sociales</li>
-    </ul>
-    <p>Elegí estos recursos por su confiabilidad, claridad y valor educativo.</p>
-  </section>
+  <main class="container">
+    <section class="bloque-portfolio">
+      <h2>Descripción del Proyecto</h2>
+      <p>
+        Este proyecto educativo interactivo busca visibilizar las “trampas invisibles” 
+        que operan dentro de las redes sociales: mecanismos de comparación, validación externa, 
+        algoritmos que manipulan lo que vemos e impactos en la salud mental.  
+        A través de dinámicas interactivas (tests, juegos, quizzes) el usuario no solo consume contenido, 
+        sino que también experimenta esas dinámicas y reflexiona sobre su relación con las redes.
+      </p>
+    </section>
+
+    <section class="bloque-portfolio">
+      <h2>Tecnologías Utilizadas</h2>
+      <ul>
+        <li>HTML5 – estructura semántica y accesible.</li>
+        <li>CSS3 – diseño responsivo, gradientes, efectos hover y animaciones suaves.</li>
+        <li>JavaScript (vanilla JS) – interactividad:
+          <ul>
+            <li>Quiz interactivo con botones “me gusta / no me interesa”.</li>
+            <li>Botones “Ver más / Ver menos”.</li>
+            <li>Control de visibilidad y temporizadores.</li>
+          </ul>
+        </li>
+        <li>Flexbox, grid y `aspect-ratio` para diseño moderno.</li>
+        <li>Animaciones CSS y transiciones para mejor UX.</li>
+      </ul>
+    </section>
+
+
+
+    <section class="bloque-portfolio">
+      <h2>Conclusión</h2>
+      <p>
+        Este proyecto no busca dar respuestas cerradas, sino fomentar la reflexión. 
+        Conocer los mecanismos invisibles de las redes sociales permite cuestionar hábitos 
+        y promover un uso más consciente y equilibrado.
+      </p>
+    </section>
+
+    <div class="acciones">
+      <a href="index.html" class="btn">Volver al Inicio</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Maria Isabel Rivero Roldán – Proyecto educativo</p>
+  </footer>
 </body>
 </html>
+

@@ -648,7 +648,7 @@ btnDislike.addEventListener('click', () => {
 // Desbloqueo de "Uso consciente" después de tiempo activo (HH:MM:SS display)
 // Uso consciente + Juego anti-scroll integrado
 (function(){
-  const UNLOCK_AFTER = 3; // segundos de uso activo necesarios; cambia aquí (ej. 120 = 2 minutos)
+  const UNLOCK_AFTER = 120; // segundos de uso activo necesarios; cambia aquí (ej. 120 = 2 minutos)
   const usoSection = document.getElementById('uso');
   if(!usoSection) return;
 
